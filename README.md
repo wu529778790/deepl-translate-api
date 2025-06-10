@@ -107,23 +107,6 @@ const result4 = await translate('Test', 'en', 'zh', '', false, true);
 }
 ```
 
-## 🌍 支持的语言
-
-| 语言 | 代码 | 语言 | 代码 |
-|------|------|------|------|
-| 自动检测 | `auto` | 中文(简体) | `zh` 或 `zh-cn` |
-| 中文(繁体) | `zh-tw` | 英语 | `en` |
-| 美式英语 | `en-us` | 英式英语 | `en-gb` |
-| 日语 | `ja` | 韩语 | `ko` |
-| 法语 | `fr` | 德语 | `de` |
-| 西班牙语 | `es` | 意大利语 | `it` |
-| 俄语 | `ru` | 葡萄牙语 | `pt` |
-| 巴西葡萄牙语 | `pt-br` | 欧洲葡萄牙语 | `pt-pt` |
-| 阿拉伯语 | `ar` | 荷兰语 | `nl` |
-| 波兰语 | `pl` | 土耳其语 | `tr` |
-
-...还有更多语言支持
-
 ## 🔧 开发
 
 ### 克隆项目
@@ -231,32 +214,21 @@ try {
 }
 ```
 
-## 🤝 贡献
+## 语言代码
 
-欢迎提交Issue和Pull Request！
+现在所有语言代码请直接使用DeepL官方语法，例如：
 
-1. Fork 本项目
-2. 创建您的特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交您的修改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 打开Pull Request
-
-## 📄 许可证
-
-本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
-
-## 🙏 致谢
-
-- 感谢 [DeepL](https://www.deepl.com/) 提供优秀的翻译服务
-- 感谢所有贡献者的支持
-
-## 📞 联系
-
-如有问题，请通过以下方式联系：
-
-- 提交 [Issue](https://github.com/your-username/deepl-translate-api/issues)
-- 发送邮件: <your-email@example.com>
-
----
-
-⭐ 如果这个项目对您有帮助，请给它一个星标！
+- 英语（美国）：en-US
+- 英语（英国）：en-GB
+- 中文（简体）：zh
+- 中文（繁体）：zh-TW
+- 日语：ja
+- 韩语：ko
+- 法语：fr
+- 德语：de
+- 西班牙语：es
+- 意大利语：it
+- 俄语：ru
+- 葡萄牙语（巴西）：pt-BR
+- 葡萄牙语（葡萄牙）：pt-PT
+- 其他请参考[DeepL官方文档](https://www.deepl.com/docs-api/translating-text/request/)。

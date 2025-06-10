@@ -1,11 +1,19 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from "vite";
 
 export default defineConfig({
   build: {
     lib: {
-      entry: './lib/main.js',
-      name: 'Counter',
-      fileName: 'counter',
+      entry: "./lib/main.js",
+      name: "DeepLTranslateAPI",
+      fileName: "deepl-translate-api",
+    },
+    rollupOptions: {
+      external: ["axios"],
+      output: {
+        globals: {
+          axios: "axios",
+        },
+      },
     },
   },
-})
+});

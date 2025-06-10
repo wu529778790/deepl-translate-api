@@ -1,5 +1,1 @@
-document.querySelector("#app").innerHTML = `
-  <div>
-    hello world
-  </div>
-`;
+export { translate, getSupportedLanguages } from "./lib/main.js";

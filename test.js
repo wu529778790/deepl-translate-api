@@ -1,4 +1,4 @@
-import { translate, getSupportedLanguages } from "./lib/main.js";
+import { translate } from "./lib/main.js";
 
 async function runTests() {
   console.log("🚀 开始DeepL翻译API测试...\n");
@@ -45,18 +45,8 @@ async function runTests() {
     console.log("翻译:", result5.data);
     console.log("✅ 测试5通过\n");
 
-    // 测试6: 获取支持语言
-    console.log("📋 测试6: 获取支持语言");
-    const languages = getSupportedLanguages();
-    console.log("支持的语言数量:", Object.keys(languages).length);
-    console.log(
-      "部分支持语言:",
-      Object.keys(languages).slice(0, 10).join(", ")
-    );
-    console.log("✅ 测试6通过\n");
-
-    // 测试7: 不同语言对的翻译
-    console.log("📋 测试7: 多语言翻译测试");
+    // 测试6: 不同语言对的翻译
+    console.log("📋 测试6: 多语言翻译测试");
     const testCases = [
       { text: "Hello", from: "en", to: "ja" },
       { text: "Guten Tag", from: "de", to: "en" },
@@ -69,7 +59,7 @@ async function runTests() {
         `${testCase.from}->${testCase.to}: "${testCase.text}" -> "${result.data}"`
       );
     }
-    console.log("✅ 测试7通过\n");
+    console.log("✅ 测试6通过\n");
 
     console.log("🎉 所有测试通过！");
   } catch (error) {

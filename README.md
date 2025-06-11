@@ -1,234 +1,118 @@
 # DeepL翻译API
 
-一个免费的DeepL翻译API包装器，支持自动语言检测和多种语言互译。通过模拟DeepL浏览器扩展的请求实现免费翻译功能。
+一个非官方的DeepL翻译API库，支持自动检测语言和多语言翻译。
 
-## ✨ 特性
+## 功能特点
 
-- 🆓 **完全免费** - 无需API密钥或付费订阅
-- 🌍 **多语言支持** - 支持50+种语言互译
-- 🚀 **自动检测** - 智能检测源语言
-- 📝 **富文本支持** - 支持HTML和XML标签处理
-- 🔄 **备选翻译** - 提供多个翻译选项
-- 💪 **TypeScript支持** - 完整的类型定义
-- ⚡ **高性能** - 基于DeepL官方接口
+- 🌐 支持多语言翻译
+- 🔍 自动检测源语言
+- 💡 提供备选翻译结果
+- 🔄 自动重试机制
+- 📝 支持长文本翻译
 
-## 📦 安装
+## 安装
 
 ```bash
-npm install deepl-translate-api
+npm install
 ```
 
-或者使用yarn：
-
-```bash
-yarn add deepl-translate-api
-```
-
-或者使用pnpm：
-
-```bash
-pnpm add deepl-translate-api
-```
-
-## 🚀 快速开始
-
-### 基本用法
+## 基本使用
 
 ```javascript
-import { translate } from 'deepl-translate-api';
+import { translate, getSession } from "./lib/main.js";
 
 // 基本翻译
-const result = await translate('Hello World!', 'en', 'zh');
-console.log(result.data); // 输出: "你好世界！"
+const result = await translate("Hello world", "en", "zh");
+console.log(result.data); // 输出：你好世界
 
-// 自动检测源语言
-const result2 = await translate('Bonjour le monde!', 'auto', 'en');
-console.log(result2.data); // 输出: "Hello world!"
+// 使用会话ID (推荐)
+const session = await getSession();
+const result2 = await translate("Hello world", "en", "zh", session);
 ```
 
-### 高级用法
-
-```javascript
-// 获取备选翻译
-const result = await translate('How are you?', 'en', 'zh');
-console.log(result.data); // 主要翻译: "你好吗？"
-console.log(result.alternatives); // 备选翻译: ["你怎么样？", "你还好吗？"]
-
-// HTML标签处理
-const htmlText = '<p>Hello <strong>world</strong>!</p>';
-const result3 = await translate(htmlText, 'en', 'zh', '', 'html');
-console.log(result3.data); // 保持HTML结构的翻译
-
-// 启用调试输出
-const result4 = await translate('Test', 'en', 'zh', '', false, true);
-// 会在控制台输出完整的翻译结果
-```
-
-## 📋 API文档
-
-### translate(text, sourceLang, targetLang, dlSession?, tagHandling?, printResult?)
-
-翻译指定文本。
-
-#### 参数
-
-| 参数 | 类型 | 必填 | 默认值 | 描述 |
-|------|------|------|--------|------|
-| `text` | `string` | ✅ | - | 要翻译的文本 |
-| `sourceLang` | `string` | ✅ | - | 源语言代码，支持 `'auto'` 自动检测 |
-| `targetLang` | `string` | ✅ | - | 目标语言代码 |
-| `dlSession` | `string` | ❌ | `''` | DeepL会话ID（可选） |
-| `tagHandling` | `'html' \| 'xml' \| boolean` | ❌ | `false` | 标签处理方式 |
-| `printResult` | `boolean` | ❌ | `false` | 是否在控制台打印结果 |
-
-#### 返回值
-
-返回 `Promise<TranslateResult | ErrorResult>`
-
-**TranslateResult**:
-
-```typescript
-{
-  id: number;           // 请求ID
-  method: string;       // 翻译方法标识
-  data: string;         // 翻译结果文本
-  alternatives: string[]; // 备选翻译结果
-  source_lang: string;  // 检测到的源语言
-  target_lang: string;  // 目标语言
-}
-```
-
-**ErrorResult**:
-
-```typescript
-{
-  code: number;    // 错误码
-  message: string; // 错误信息
-}
-```
-
-## 🔧 开发
-
-### 克隆项目
+## 测试
 
 ```bash
-git clone https://github.com/your-username/deepl-translate-api.git
-cd deepl-translate-api
+# 运行完整测试套件
+node test.js
 ```
 
-### 安装依赖
+## 重要提示 ⚠️
 
-```bash
-pnpm install
-```
+### 速率限制
 
-### 运行测试
+DeepL对请求频率有严格限制，建议：
 
-```bash
-pnpm test
-```
+1. **避免连续请求** - 请求间隔至少3-5秒
+2. **处理429错误** - 本库已内置重试机制，但可能需要等待较长时间
+3. **使用会话ID** - 可以减少被限制的概率
+4. **分批处理** - 对于大量文本，建议分批翻译
 
-### 构建项目
-
-```bash
-pnpm build
-```
-
-## 📝 示例
-
-### Node.js环境
+### 使用建议
 
 ```javascript
-import { translate } from 'deepl-translate-api';
-
-async function translateText() {
-  try {
-    const result = await translate('Hello, world!', 'en', 'zh');
-    console.log('翻译结果:', result.data);
-    console.log('检测语言:', result.source_lang);
-    console.log('备选翻译:', result.alternatives);
-  } catch (error) {
-    console.error('翻译失败:', error.message);
-  }
-}
-
-translateText();
-```
-
-### 浏览器环境
-
-```html
-<script type="module">
-import { translate } from 'deepl-translate-api';
-
-document.getElementById('translateBtn').addEventListener('click', async () => {
-  const text = document.getElementById('inputText').value;
-  const result = await translate(text, 'auto', 'zh');
-  document.getElementById('output').textContent = result.data;
-});
-</script>
-```
-
-### 批量翻译
-
-```javascript
-import { translate } from 'deepl-translate-api';
-
-async function batchTranslate(texts, sourceLang, targetLang) {
-  const results = await Promise.all(
-    texts.map(text => translate(text, sourceLang, targetLang))
-  );
-  return results.map(result => result.data);
-}
-
-// 使用示例
-const texts = ['Hello', 'World', 'How are you?'];
-const translations = await batchTranslate(texts, 'en', 'zh');
-console.log(translations); // ['你好', '世界', '你好吗？']
-```
-
-## ⚠️ 注意事项
-
-1. **使用限制**: 本工具通过模拟DeepL浏览器扩展请求实现，请合理使用，避免过度频繁请求
-2. **稳定性**: 由于依赖DeepL的非公开接口，可能会受到接口变更影响
-3. **商业使用**: 如需商业使用，建议使用DeepL官方API
-4. **错误处理**: 请妥善处理网络错误和限流错误(429状态码)
-
-## 🐛 错误处理
-
-```javascript
-import { translate } from 'deepl-translate-api';
-
-try {
-  const result = await translate('Hello', 'en', 'zh');
+// ✅ 推荐：带延时的批量翻译
+async function batchTranslate(texts, from, to) {
+  const session = await getSession();
+  const results = [];
   
-  // 检查是否为错误结果
-  if (result.code === 429) {
-    console.log('请求过于频繁，请稍后重试');
-    return;
+  for (const text of texts) {
+    try {
+      const result = await translate(text, from, to, session);
+      results.push(result);
+      // 重要：请求间添加延时
+      await new Promise(resolve => setTimeout(resolve, 5000));
+    } catch (error) {
+      console.error(`翻译失败: ${error.message}`);
+      results.push({ error: error.message });
+    }
   }
   
-  console.log('翻译成功:', result.data);
-} catch (error) {
-  console.error('翻译失败:', error.message);
+  return results;
+}
+
+// ❌ 不推荐：连续快速请求
+// 这样很容易触发429错误
+async function badExample() {
+  for (const text of texts) {
+    await translate(text, "en", "zh"); // 没有延时，会被限制
+  }
 }
 ```
 
-## 语言代码
+## API
 
-现在所有语言代码请直接使用DeepL官方语法，例如：
+### translate(text, sourceLang, targetLang, dlSession?)
 
-- 英语（美国）：en-US
-- 英语（英国）：en-GB
-- 中文（简体）：zh
-- 中文（繁体）：zh-TW
-- 日语：ja
-- 韩语：ko
-- 法语：fr
-- 德语：de
-- 西班牙语：es
-- 意大利语：it
-- 俄语：ru
-- 葡萄牙语（巴西）：pt-BR
-- 葡萄牙语（葡萄牙）：pt-PT
-- 其他请参考[DeepL官方文档](https://www.deepl.com/docs-api/translating-text/request/)。
+翻译文本
+
+- `text`: 要翻译的文本 (最大5000字符)
+- `sourceLang`: 源语言代码 ("auto"表示自动检测)
+- `targetLang`: 目标语言代码
+- `dlSession`: DeepL会话ID (可选，推荐使用)
+
+### getSession()
+
+获取DeepL会话ID，有助于减少速率限制。
+
+## 常见问题
+
+### Q: 遇到"Too Many Requests"错误怎么办？
+
+A: 这是正常的速率限制，请：
+
+1. 等待更长时间后重试 (建议10分钟以上)
+2. 使用会话ID
+3. 减少请求频率
+
+### Q: 长文本翻译总是失败？
+
+A: 建议：
+
+1. 将长文本分段处理
+2. 每段之间增加5-10秒延时
+3. 使用会话ID
+
+## 许可证
+
+MIT License

@@ -37,8 +37,7 @@
     "url": ""
   },
   "dependencies": {
-    "axios": "^1.9.0",
-    "puppeteer": "^24.10.0"
+    "axios": "^1.9.0"
   },
   "devDependencies": {
     "vite": "^6.1.1"

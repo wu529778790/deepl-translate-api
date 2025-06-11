@@ -7,7 +7,6 @@ async function runTests() {
     // 测试1: 基本翻译
     console.log("📋 测试1: 基本翻译");
     const result1 = await translate("How are you?", "en", "zh");
-    console.log(result1);
     console.log("原文:", "How are you?");
     console.log("翻译:", result1.data);
     console.log("备选:", result1.alternatives);

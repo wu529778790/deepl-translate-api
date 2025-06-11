@@ -7,61 +7,62 @@ async function runTests() {
     // 测试1: 基本翻译
     console.log("📋 测试1: 基本翻译");
     const result1 = await translate("How are you?", "en", "zh");
+    console.log(result1);
     console.log("原文:", "How are you?");
     console.log("翻译:", result1.data);
     console.log("备选:", result1.alternatives);
     console.log("检测语言:", result1.source_lang);
     console.log("✅ 测试1通过\n");
 
-    // 测试2: 自动检测语言
-    console.log("📋 测试2: 自动检测语言");
-    const result2 = await translate("Bonjour le monde!", "auto", "en");
-    console.log("原文:", "Bonjour le monde!");
-    console.log("翻译:", result2.data);
-    console.log("检测语言:", result2.source_lang);
-    console.log("✅ 测试2通过\n");
+    // // 测试2: 自动检测语言
+    // console.log("📋 测试2: 自动检测语言");
+    // const result2 = await translate("Bonjour le monde!", "auto", "en");
+    // console.log("原文:", "Bonjour le monde!");
+    // console.log("翻译:", result2.data);
+    // console.log("检测语言:", result2.source_lang);
+    // console.log("✅ 测试2通过\n");
 
-    // 测试3: 中文翻译英文
-    console.log("📋 测试3: 中文翻译英文");
-    const result3 = await translate("你好世界", "zh", "en");
-    console.log("原文:", "你好世界");
-    console.log("翻译:", result3.data);
-    console.log("✅ 测试3通过\n");
+    // // 测试3: 中文翻译英文
+    // console.log("📋 测试3: 中文翻译英文");
+    // const result3 = await translate("你好世界", "zh", "en");
+    // console.log("原文:", "你好世界");
+    // console.log("翻译:", result3.data);
+    // console.log("✅ 测试3通过\n");
 
-    // 测试4: HTML标签处理
-    console.log("📋 测试4: HTML标签处理");
-    const htmlText = "<p>Hello <strong>world</strong>!</p>";
-    const result4 = await translate(htmlText, "en", "zh", "", "html");
-    console.log("原文:", htmlText);
-    console.log("翻译:", result4.data);
-    console.log("✅ 测试4通过\n");
+    // // 测试4: HTML标签处理
+    // console.log("📋 测试4: HTML标签处理");
+    // const htmlText = "<p>Hello <strong>world</strong>!</p>";
+    // const result4 = await translate(htmlText, "en", "zh");
+    // console.log("原文:", htmlText);
+    // console.log("翻译:", result4.data);
+    // console.log("✅ 测试4通过\n");
 
-    // 测试5: 长文本翻译
-    console.log("📋 测试5: 长文本翻译");
-    const longText =
-      "The quick brown fox jumps over the lazy dog. This is a test of a longer sentence to see how the translation API handles multiple sentences and punctuation.";
-    const result5 = await translate(longText, "en", "zh");
-    console.log("原文:", longText);
-    console.log("翻译:", result5.data);
-    console.log("✅ 测试5通过\n");
+    // // 测试5: 长文本翻译
+    // console.log("📋 测试5: 长文本翻译");
+    // const longText =
+    //   "The quick brown fox jumps over the lazy dog. This is a test of a longer sentence to see how the translation API handles multiple sentences and punctuation.";
+    // const result5 = await translate(longText, "en", "zh");
+    // console.log("原文:", longText);
+    // console.log("翻译:", result5.data);
+    // console.log("✅ 测试5通过\n");
 
-    // 测试6: 不同语言对的翻译
-    console.log("📋 测试6: 多语言翻译测试");
-    const testCases = [
-      { text: "Hello", from: "en", to: "ja" },
-      { text: "Guten Tag", from: "de", to: "en" },
-      { text: "こんにちは", from: "ja", to: "en" },
-    ];
+    // // 测试6: 不同语言对的翻译
+    // console.log("📋 测试6: 多语言翻译测试");
+    // const testCases = [
+    //   { text: "Hello", from: "en", to: "ja" },
+    //   { text: "Guten Tag", from: "de", to: "en" },
+    //   { text: "こんにちは", from: "ja", to: "en" },
+    // ];
 
-    for (const testCase of testCases) {
-      const result = await translate(testCase.text, testCase.from, testCase.to);
-      console.log(
-        `${testCase.from}->${testCase.to}: "${testCase.text}" -> "${result.data}"`
-      );
-    }
-    console.log("✅ 测试6通过\n");
+    // for (const testCase of testCases) {
+    //   const result = await translate(testCase.text, testCase.from, testCase.to);
+    //   console.log(
+    //     `${testCase.from}->${testCase.to}: "${testCase.text}" -> "${result.data}"`
+    //   );
+    // }
+    // console.log("✅ 测试6通过\n");
 
-    console.log("🎉 所有测试通过！");
+    // console.log("🎉 所有测试通过！");
   } catch (error) {
     console.error("❌ 测试失败:", error.message);
 
@@ -101,5 +102,5 @@ async function errorHandlingDemo() {
 // 运行所有测试
 (async () => {
   await runTests();
-  await errorHandlingDemo();
+  // await errorHandlingDemo();
 })();

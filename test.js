@@ -16,7 +16,7 @@ async function runTests() {
     console.log("备选:", result1.alternatives);
     console.log("检测语言:", result1.source_lang);
     console.log("✅ 测试1通过\n");
-    await sleep(1000);
+    await sleep(2000);
 
     // 测试2: 自动检测语言
     console.log("📋 测试2: 自动检测语言");
@@ -25,7 +25,7 @@ async function runTests() {
     console.log("翻译:", result2.data);
     console.log("检测语言:", result2.source_lang);
     console.log("✅ 测试2通过\n");
-    await sleep(1000);
+    await sleep(2000);
 
     // 测试3: 中文翻译英文
     console.log("📋 测试3: 中文翻译英文");
@@ -33,7 +33,7 @@ async function runTests() {
     console.log("原文:", "你好世界");
     console.log("翻译:", result3.data);
     console.log("✅ 测试3通过\n");
-    await sleep(1000);
+    await sleep(2000);
 
     // 测试4: 长文本翻译
     console.log("📋 测试4: 长文本翻译");
@@ -43,7 +43,7 @@ async function runTests() {
     console.log("原文:", longText);
     console.log("翻译:", result5.data);
     console.log("✅ 测试4通过\n");
-    await sleep(1000);
+    await sleep(2000);
 
     // 测试5: 不同语言对的翻译
     console.log("📋 测试5: 多语言翻译测试");
@@ -58,7 +58,7 @@ async function runTests() {
       console.log(
         `${testCase.from}->${testCase.to}: "${testCase.text}" -> "${result.data}"`
       );
-      await sleep(1000);
+      await sleep(2000);
     }
     console.log("✅ 测试5通过\n");
 

@@ -9,6 +9,9 @@
 - 💡 提供备选翻译结果
 - 🔄 自动重试机制
 - 📝 支持长文本翻译
+- 📦 **新增：批量翻译功能**
+- ⚡ **智能延迟控制，避免速率限制**
+- 📊 **详细的批量翻译统计和进度跟踪**
 
 ## 安装
 
@@ -18,23 +21,69 @@ npm install
 
 ## 基本使用
 
+### 单个文本翻译
+
 ```javascript
-import { translate, getSession } from "./lib/main.js";
+import { translate } from "./lib/main.js";
 
 // 基本翻译
-const result = await translate("Hello world", "en", "zh");
+const result = await translate("Hello world", "zh");
 console.log(result.data); // 输出：你好世界
+```
 
-// 使用会话ID (推荐)
-const session = await getSession();
-const result2 = await translate("Hello world", "en", "zh", session);
+### 批量翻译
+
+```javascript
+import { translateBatch, cleanup } from "./lib/main.js";
+
+async function batchTranslateExample() {
+  try {
+    // 要翻译的文本数组
+    const texts = [
+      "Hello, how are you?",
+      "The weather is beautiful today.",
+      "I love programming!",
+      "Technology makes life easier."
+    ];
+
+    // 执行批量翻译
+    const result = await translateBatch(texts, "zh", {
+      delay: 2000,            // 每次翻译间隔2秒
+      continueOnError: true,  // 遇到错误继续翻译
+      onProgress: (current, total, itemResult) => {
+        console.log(`进度: ${current}/${total} - ${itemResult.success ? '成功' : '失败'}`);
+      }
+    });
+
+    // 输出结果
+    console.log(`翻译完成！成功率: ${result.successRate.toFixed(1)}%`);
+    
+    result.results.forEach((item, index) => {
+      if (item.success) {
+        console.log(`${index + 1}. "${item.originalText}" -> "${item.translatedText}"`);
+      } else {
+        console.log(`${index + 1}. 翻译失败: ${item.error}`);
+      }
+    });
+
+  } catch (error) {
+    console.error("批量翻译失败:", error.message);
+  } finally {
+    await cleanup(); // 清理浏览器资源
+  }
+}
+
+batchTranslateExample();
 ```
 
 ## 测试
 
 ```bash
-# 运行完整测试套件
+# 运行单个翻译测试
 node test.js
+
+# 运行批量翻译测试
+node test-batch.js
 ```
 
 ## 重要提示 ⚠️
@@ -82,18 +131,56 @@ async function badExample() {
 
 ## API
 
-### translate(text, sourceLang, targetLang, dlSession?)
+### translate(text, targetLang)
 
-翻译文本
+单个文本翻译
 
 - `text`: 要翻译的文本 (最大5000字符)
-- `sourceLang`: 源语言代码 ("auto"表示自动检测)
-- `targetLang`: 目标语言代码
-- `dlSession`: DeepL会话ID (可选，推荐使用)
+- `targetLang`: 目标语言代码 (默认: "zh")
 
-### getSession()
+**返回值**: `Promise<TranslateResult>`
 
-获取DeepL会话ID，有助于减少速率限制。
+```javascript
+const result = await translate("Hello world", "zh");
+// result.data: "你好世界"
+```
+
+### translateBatch(texts, targetLang, options)
+
+批量翻译文本
+
+- `texts`: 要翻译的文本数组 (最大100个元素，每个文本最大5000字符)
+- `targetLang`: 目标语言代码 (默认: "zh")
+- `options`: 配置选项 (可选)
+  - `delay`: 每次翻译间隔时间(毫秒) (默认: 2000)
+  - `continueOnError`: 遇到错误是否继续 (默认: true)
+  - `onProgress`: 进度回调函数
+
+**返回值**: `Promise<BatchTranslateResult>`
+
+```javascript
+const result = await translateBatch([
+  "Hello world",
+  "How are you?"
+], "zh", {
+  delay: 1500,
+  continueOnError: true,
+  onProgress: (current, total, itemResult) => {
+    console.log(`进度: ${current}/${total}`);
+  }
+});
+
+// result.successRate: 100
+// result.results: [...翻译结果]
+```
+
+### cleanup()
+
+清理浏览器资源，建议在程序结束时调用。
+
+```javascript
+await cleanup();
+```
 
 ## 常见问题
 
@@ -101,17 +188,42 @@ async function badExample() {
 
 A: 这是正常的速率限制，请：
 
-1. 等待更长时间后重试 (建议10分钟以上)
-2. 使用会话ID
-3. 减少请求频率
+1. 增加翻译间隔时间 (建议3-5秒以上)
+2. 减少批量翻译的数量
+3. 等待更长时间后重试
+
+### Q: 批量翻译时部分文本失败怎么办？
+
+A: 这是正常现象，建议：
+
+1. 设置 `continueOnError: true` 让翻译继续进行
+2. 增加延迟时间 (推荐2-5秒)
+3. 对失败的文本单独重试
+
+### Q: 如何优化批量翻译性能？
+
+A: 建议配置：
+
+```javascript
+const result = await translateBatch(texts, "zh", {
+  delay: 2000,            // 适中的延迟，避免被限制
+  continueOnError: true,  // 遇错继续，提高整体成功率
+  onProgress: (current, total, result) => {
+    // 实时监控翻译进度
+    if (!result.success) {
+      console.log(`第${current}个翻译失败，继续下一个...`);
+    }
+  }
+});
+```
 
 ### Q: 长文本翻译总是失败？
 
 A: 建议：
 
-1. 将长文本分段处理
-2. 每段之间增加5-10秒延时
-3. 使用会话ID
+1. 将长文本分段处理 (每段不超过3000字符)
+2. 使用批量翻译功能
+3. 增加翻译间隔
 
 ## 许可证
 

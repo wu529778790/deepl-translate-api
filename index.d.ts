@@ -23,6 +23,62 @@ export interface TranslateResult {
 }
 
 /**
+ * 批量翻译单个结果接口
+ */
+export interface BatchTranslateItemResult {
+  /** 是否翻译成功 */
+  success: boolean;
+  /** 原始文本 */
+  originalText: string;
+  /** 翻译后的文本 */
+  translatedText: string | null;
+  /** 详细翻译结果 */
+  result: TranslateResult | null;
+  /** 错误信息 */
+  error: string | null;
+  /** 在原数组中的索引 */
+  index: number;
+}
+
+/**
+ * 批量翻译配置选项
+ */
+export interface BatchTranslateOptions {
+  /** 每次翻译之间的延迟时间(毫秒)，默认2000ms */
+  delay?: number;
+  /** 遇到错误时是否继续翻译其他文本，默认true */
+  continueOnError?: boolean;
+  /** 进度回调函数，接收参数(current, total, result) */
+  onProgress?: (
+    current: number,
+    total: number,
+    result: BatchTranslateItemResult
+  ) => void;
+}
+
+/**
+ * 批量翻译结果接口
+ */
+export interface BatchTranslateResult {
+  /** 状态码 */
+  code: number;
+  /** 总翻译数量 */
+  totalCount: number;
+  /** 成功翻译数量 */
+  successCount: number;
+  /** 失败翻译数量 */
+  errorCount: number;
+  /** 成功率（百分比） */
+  successRate: number;
+  /** 详细结果数组 */
+  results: BatchTranslateItemResult[];
+  /** 目标语言 */
+  targetLang: string;
+  /** 完成时间戳 */
+  timestamp: string;
+}
+
+/**
  * 错误结果接口
  */
 export interface ErrorResult {
@@ -97,6 +153,19 @@ export declare function translate(
   tagHandling?: TagHandling,
   printResult?: boolean
 ): Promise<TranslateResult | ErrorResult>;
+
+/**
+ * 批量翻译函数
+ * @param texts 要翻译的文本数组（每个文本最大5000字符，数组最大100个元素）
+ * @param targetLang 目标语言代码
+ * @param options 批量翻译配置选项
+ * @returns Promise<BatchTranslateResult>
+ */
+export declare function translateBatch(
+  texts: string[],
+  targetLang?: SupportedLanguage,
+  options?: BatchTranslateOptions
+): Promise<BatchTranslateResult>;
 
 /**
  * 获取支持的语言列表

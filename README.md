@@ -32,10 +32,10 @@ const result = await translate("Hello world", "zh");
 console.log(result.data); // 输出：你好世界
 ```
 
-### 批量翻译 - 简洁统一的接口
+### 批量翻译 - 统一接口设计
 
 ```javascript
-import { translate, translateBatch, cleanup } from "./lib/main.js";
+import { translate, cleanup } from "./lib/main.js";
 
 async function batchTranslateExample() {
   try {
@@ -47,28 +47,14 @@ async function batchTranslateExample() {
       "Technology makes life easier."
     ];
 
-    // 方法1：直接使用 translate 函数 (推荐)
-    console.log("🚀 方法1：translate函数自动识别数组输入");
-    const result1 = await translate(texts, "zh");
-    console.log(`翻译完成！成功率: ${result1.successRate.toFixed(1)}%`);
-
-    // 方法2：使用 translateBatch 函数 (支持进度回调)
-    console.log("\n🚀 方法2：translateBatch支持进度回调");
-    const result2 = await translateBatch(texts, "zh", {
-      onProgress: (current, total, itemResult) => {
-        if (itemResult.status) {
-          console.log(`状态: ${itemResult.message}`);
-        } else {
-          console.log(`进度: ${current}/${total} - ${itemResult.success ? '成功' : '失败'}`);
-        }
-      }
-    });
+    // 使用同一个 translate 函数，自动识别数组输入
+    console.log("🚀 translate函数自动识别数组输入");
+    const batchResult = await translate(texts, "zh");
+    console.log(`翻译完成！成功率: ${batchResult.successRate.toFixed(1)}%`);
 
     // 输出结果
-    console.log(`\n✅ 批量翻译完成！成功率: ${result2.successRate.toFixed(1)}%`);
-    console.log("💡 优势：逐个翻译，结果准确可靠");
-    
-    result2.results.forEach((item, index) => {
+    console.log("📋 翻译结果:");
+    batchResult.results.forEach((item, index) => {
       if (item.success) {
         console.log(`${index + 1}. "${item.originalText}" -> "${item.translatedText}"`);
       } else {
@@ -76,8 +62,13 @@ async function batchTranslateExample() {
       }
     });
 
+    // 单个翻译也是同一个函数
+    console.log("\n🔧 单个翻译测试:");
+    const singleResult = await translate("Hello, world!", "zh");
+    console.log(`"Hello, world!" -> "${singleResult.data}"`);
+
   } catch (error) {
-    console.error("批量翻译失败:", error.message);
+    console.error("翻译失败:", error.message);
   } finally {
     await cleanup(); // 清理浏览器资源
   }

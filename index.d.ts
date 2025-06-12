@@ -41,23 +41,7 @@ export interface BatchTranslateItemResult {
 }
 
 /**
- * 批量翻译配置选项
- */
-export interface BatchTranslateOptions {
-  /** 每次翻译之间的延迟时间(毫秒)，默认2000ms */
-  delay?: number;
-  /** 遇到错误时是否继续翻译其他文本，默认true */
-  continueOnError?: boolean;
-  /** 进度回调函数，接收参数(current, total, result) */
-  onProgress?: (
-    current: number,
-    total: number,
-    result: BatchTranslateItemResult
-  ) => void;
-}
-
-/**
- * 批量翻译结果接口
+ * 批量翻译结果接口（当translate函数接收数组输入时返回）
  */
 export interface BatchTranslateResult {
   /** 状态码 */
@@ -74,6 +58,8 @@ export interface BatchTranslateResult {
   results: BatchTranslateItemResult[];
   /** 目标语言 */
   targetLang: string;
+  /** 翻译方法标识 */
+  method: string;
   /** 完成时间戳 */
   timestamp: string;
 }
@@ -136,10 +122,12 @@ export type SupportedLanguage =
 export type TagHandling = "html" | "xml" | boolean;
 
 /**
- * 翻译函数 - 支持单个文本或批量翻译
- * @param text 要翻译的文本或文本数组（单个文本最大5000字符，批量翻译总长度不超过5000字符）
+ * 翻译函数 - 统一接口，自动识别输入类型
+ * @param text 要翻译的文本或文本数组
+ *             - 单个文本：字符串（最大5000字符）
+ *             - 批量翻译：字符串数组（最大100个元素，每个最大5000字符）
  * @param targetLang 目标语言代码，默认"zh"
- * @returns Promise<TranslateResult | BatchTranslateResult>
+ * @returns Promise<TranslateResult | BatchTranslateResult> 根据输入类型返回相应结果
  */
 export declare function translate(
   text: string | string[],
@@ -147,25 +135,24 @@ export declare function translate(
 ): Promise<TranslateResult | BatchTranslateResult>;
 
 /**
- * 批量翻译函数
- * @param texts 要翻译的文本数组（每个文本最大5000字符，数组最大100个元素）
- * @param targetLang 目标语言代码
- * @param options 批量翻译配置选项
- * @returns Promise<BatchTranslateResult>
+ * 清理浏览器资源
  */
-export declare function translateBatch(
-  texts: string[],
-  targetLang?: SupportedLanguage,
-  options?: BatchTranslateOptions
-): Promise<BatchTranslateResult>;
+export declare function cleanup(): Promise<void>;
 
 /**
- * 获取支持的语言列表
- * @returns 支持的语言代码映射对象
+ * 查找系统Chrome路径
  */
-export declare function getSupportedLanguages(): Record<string, string>;
+export declare function findChromePath(): string | null;
 
 /**
- * 语言代码映射类型
+ * 询问用户是否下载Chrome
  */
-export type LanguageMap = Record<string, string>;
+export declare function askUserToDownloadChrome(): Promise<boolean>;
+
+/**
+ * 使用Puppeteer内置Chrome启动浏览器
+ */
+export declare function launchWithPuppeteerChrome(): Promise<{
+  browser: any;
+  page: any;
+}>;

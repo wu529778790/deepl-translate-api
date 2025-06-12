@@ -1,4 +1,4 @@
-import { translate, translateBatch, cleanup } from "./lib/main.js";
+import { translate, cleanup } from "./lib/main.js";
 
 /**
  * 简洁的批量翻译示例 - 逐个翻译模式
@@ -58,55 +58,11 @@ async function testSimpleBatchTranslation() {
 }
 
 /**
- * 测试translateBatch函数的进度回调功能
- */
-async function testTranslateBatchWithProgress() {
-  try {
-    console.log("\n🔧 测试 translateBatch 函数的进度回调功能...");
-
-    const texts = [
-      "Machine learning is transforming industries.",
-      "Open source software drives innovation.",
-      "Cloud computing enables scalability.",
-    ];
-
-    // 定义进度回调函数
-    const onProgress = (current, total, result) => {
-      if (result.status) {
-        console.log(`📈 状态: ${result.message}`);
-      } else {
-        const percentage = ((current / total) * 100).toFixed(1);
-        if (result.success) {
-          console.log(
-            `📈 进度: ${percentage}% - "${result.originalText}" -> "${result.translatedText}"`
-          );
-        } else {
-          console.log(`📈 进度: ${percentage}% - 翻译失败: ${result.error}`);
-        }
-      }
-    };
-
-    const startTime = Date.now();
-    const result = await translateBatch(texts, "zh", {
-      onProgress: onProgress,
-    });
-    const endTime = Date.now();
-
-    console.log(
-      `\n✅ translateBatch 函数测试完成，耗时: ${endTime - startTime}ms`
-    );
-    console.log(`📊 成功率: ${result.successRate.toFixed(1)}%`);
-  } catch (error) {
-    console.error("translateBatch 测试失败:", error.message);
-  }
-}
-
-/**
  * 测试单个文本翻译
  */
 async function testSingleTranslation() {
   try {
-    console.log("\n🔧 测试单个文本翻译...");
+    console.log("🔧 测试单个文本翻译...");
 
     const text = "Hello, world! This is a single translation test.";
     const startTime = Date.now();
@@ -122,9 +78,39 @@ async function testSingleTranslation() {
   }
 }
 
+/**
+ * 测试不同语言翻译
+ */
+async function testMultipleLanguages() {
+  try {
+    console.log("\n🌐 测试不同语言翻译...");
+
+    const testCases = [
+      { text: "Hello, world!", targetLang: "zh", description: "英文→中文" },
+      { text: "Bonjour le monde!", targetLang: "en", description: "法文→英文" },
+      { text: "你好，世界！", targetLang: "ja", description: "中文→日文" },
+    ];
+
+    for (const testCase of testCases) {
+      console.log(`\n🔄 ${testCase.description}: "${testCase.text}"`);
+
+      const startTime = Date.now();
+      const result = await translate(testCase.text, testCase.targetLang);
+      const endTime = Date.now();
+
+      console.log(`✅ 译文: "${result.data}" (耗时: ${endTime - startTime}ms)`);
+
+      // 添加短暂延迟
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+  } catch (error) {
+    console.error("多语言翻译测试失败:", error.message);
+  }
+}
+
 // 运行测试
 async function runTests() {
-  console.log("🎯 简洁批量翻译功能测试");
+  console.log("🎯 统一接口翻译功能测试");
   console.log("=".repeat(50));
 
   // 测试1：单个文本翻译
@@ -133,17 +119,17 @@ async function runTests() {
   // 等待一下
   await new Promise((resolve) => setTimeout(resolve, 2000));
 
-  // 测试2：批量翻译（直接使用translate函数）
+  // 测试2：批量翻译（同一个translate函数）
   await testSimpleBatchTranslation();
 
   // 等待一下
   await new Promise((resolve) => setTimeout(resolve, 2000));
 
-  // 测试3：translateBatch函数（支持进度回调）
-  await testTranslateBatchWithProgress();
+  // 测试3：多语言翻译
+  await testMultipleLanguages();
 
   console.log("\n🎉 所有测试完成！");
-  console.log("💡 新架构：一个函数，自动判断输入类型，简洁可靠！");
+  console.log("💡 统一接口：translate函数自动识别输入类型，简洁高效！");
 }
 
 // 执行测试

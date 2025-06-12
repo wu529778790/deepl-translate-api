@@ -136,23 +136,15 @@ export type SupportedLanguage =
 export type TagHandling = "html" | "xml" | boolean;
 
 /**
- * 翻译函数
- * @param text 要翻译的文本（最大5000字符）
- * @param sourceLang 源语言代码，支持 'auto' 自动检测
- * @param targetLang 目标语言代码
- * @param dlSession DeepL会话ID，可选
- * @param tagHandling 标签处理方式，可选：'html' | 'xml' | false
- * @param printResult 是否打印结果到控制台，默认false
- * @returns Promise<TranslateResult | ErrorResult>
+ * 翻译函数 - 支持单个文本或批量翻译
+ * @param text 要翻译的文本或文本数组（单个文本最大5000字符，批量翻译总长度不超过5000字符）
+ * @param targetLang 目标语言代码，默认"zh"
+ * @returns Promise<TranslateResult | BatchTranslateResult>
  */
 export declare function translate(
-  text: string,
-  sourceLang: SupportedLanguage,
-  targetLang: SupportedLanguage,
-  dlSession?: string,
-  tagHandling?: TagHandling,
-  printResult?: boolean
-): Promise<TranslateResult | ErrorResult>;
+  text: string | string[],
+  targetLang?: SupportedLanguage
+): Promise<TranslateResult | BatchTranslateResult>;
 
 /**
  * 批量翻译函数

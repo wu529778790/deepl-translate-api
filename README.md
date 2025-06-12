@@ -9,9 +9,10 @@
 - 💡 提供备选翻译结果
 - 🔄 自动重试机制
 - 📝 支持长文本翻译
-- 📦 **新增：批量翻译功能**
-- ⚡ **智能延迟控制，避免速率限制**
+- 🎯 **统一接口 - translate函数自动识别输入类型**
+- ⚡ **批量翻译 - 逐个翻译，结果准确可靠**
 - 📊 **详细的批量翻译统计和进度跟踪**
+- 🔧 **简洁架构 - 一个函数搞定所有翻译需求**
 
 ## 安装
 
@@ -31,10 +32,10 @@ const result = await translate("Hello world", "zh");
 console.log(result.data); // 输出：你好世界
 ```
 
-### 批量翻译
+### 批量翻译 - 简洁统一的接口
 
 ```javascript
-import { translateBatch, cleanup } from "./lib/main.js";
+import { translate, translateBatch, cleanup } from "./lib/main.js";
 
 async function batchTranslateExample() {
   try {
@@ -46,19 +47,28 @@ async function batchTranslateExample() {
       "Technology makes life easier."
     ];
 
-    // 执行批量翻译
-    const result = await translateBatch(texts, "zh", {
-      delay: 2000,            // 每次翻译间隔2秒
-      continueOnError: true,  // 遇到错误继续翻译
+    // 方法1：直接使用 translate 函数 (推荐)
+    console.log("🚀 方法1：translate函数自动识别数组输入");
+    const result1 = await translate(texts, "zh");
+    console.log(`翻译完成！成功率: ${result1.successRate.toFixed(1)}%`);
+
+    // 方法2：使用 translateBatch 函数 (支持进度回调)
+    console.log("\n🚀 方法2：translateBatch支持进度回调");
+    const result2 = await translateBatch(texts, "zh", {
       onProgress: (current, total, itemResult) => {
-        console.log(`进度: ${current}/${total} - ${itemResult.success ? '成功' : '失败'}`);
+        if (itemResult.status) {
+          console.log(`状态: ${itemResult.message}`);
+        } else {
+          console.log(`进度: ${current}/${total} - ${itemResult.success ? '成功' : '失败'}`);
+        }
       }
     });
 
     // 输出结果
-    console.log(`翻译完成！成功率: ${result.successRate.toFixed(1)}%`);
+    console.log(`\n✅ 批量翻译完成！成功率: ${result2.successRate.toFixed(1)}%`);
+    console.log("💡 优势：逐个翻译，结果准确可靠");
     
-    result.results.forEach((item, index) => {
+    result2.results.forEach((item, index) => {
       if (item.success) {
         console.log(`${index + 1}. "${item.originalText}" -> "${item.translatedText}"`);
       } else {
@@ -145,15 +155,36 @@ const result = await translate("Hello world", "zh");
 // result.data: "你好世界"
 ```
 
+### translate(text, targetLang)
+
+单个文本翻译或批量翻译
+
+- `text`: 要翻译的文本(字符串)或文本数组 (单个文本最大5000字符，批量翻译总长度不超过5000字符)
+- `targetLang`: 目标语言代码 (默认: "zh")
+
+**返回值**: `Promise<TranslateResult | BatchTranslateResult>`
+
+```javascript
+// 单个文本翻译
+const result = await translate("Hello world", "zh");
+// result.data: "你好世界"
+
+// 批量翻译 - 真正的批量翻译！
+const batchResult = await translate([
+  "Hello world",
+  "How are you?",
+  "Nice to meet you"
+], "zh");
+// batchResult.results: [...翻译结果数组]
+```
+
 ### translateBatch(texts, targetLang, options)
 
-批量翻译文本
+批量翻译文本 - 支持进度回调
 
-- `texts`: 要翻译的文本数组 (最大100个元素，每个文本最大5000字符)
+- `texts`: 要翻译的文本数组 (最大100个元素，总长度不超过5000字符)
 - `targetLang`: 目标语言代码 (默认: "zh")
 - `options`: 配置选项 (可选)
-  - `delay`: 每次翻译间隔时间(毫秒) (默认: 2000)
-  - `continueOnError`: 遇到错误是否继续 (默认: true)
   - `onProgress`: 进度回调函数
 
 **返回值**: `Promise<BatchTranslateResult>`

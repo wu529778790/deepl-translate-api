@@ -1,16 +1,16 @@
-import { translate, getSession } from "./lib/main.js";
+import { translate } from "./lib/main.js";
 
 /**
  * 安全翻译函数 - 带错误处理
  */
-async function safeTranslate(text, from, to, session = "", testName = "") {
+async function safeTranslate(text, from, to, testName = "") {
   try {
     console.log(
       `🔄 ${testName}正在翻译: "${text.slice(0, 50)}${
         text.length > 50 ? "..." : ""
       }"`
     );
-    const result = await translate(text, from, to, session);
+    const result = await translate(text, from, to);
     console.log(`✅ 翻译成功: "${result.data}"`);
     if (result.alternatives && result.alternatives.length > 0) {
       console.log(`💡 备选翻译: ${result.alternatives.slice(0, 3).join(", ")}`);
@@ -36,12 +36,6 @@ async function safeTranslate(text, from, to, session = "", testName = "") {
 async function runAllTests() {
   console.log("🚀 开始DeepL翻译API完整测试...\n");
 
-  // 获取会话ID
-  console.log("🔐 正在获取DeepL会话ID...");
-  const session = await getSession();
-  console.log("会话ID状态:", session ? "✅ 已获取" : "❌ 未获取");
-  console.log();
-
   let passedTests = 0;
   let totalTests = 0;
 
@@ -56,7 +50,6 @@ async function runAllTests() {
       "Hello, world!",
       "en",
       "zh",
-      session,
       "测试1 - "
     );
     if (!result1.error) {
@@ -76,7 +69,6 @@ async function runAllTests() {
       "Bonjour le monde!",
       "auto",
       "en",
-      session,
       "测试2 - "
     );
     if (!result2.error) {
@@ -96,7 +88,6 @@ async function runAllTests() {
       "你好世界！欢迎使用DeepL翻译。",
       "zh",
       "en",
-      session,
       "测试3 - "
     );
     if (!result3.error) {
@@ -114,13 +105,7 @@ async function runAllTests() {
 
     const longText =
       "The quick brown fox jumps over the lazy dog. This is a test of a longer sentence to see how the translation API handles multiple sentences and punctuation. Artificial intelligence is transforming the way we communicate across languages.";
-    const result4 = await safeTranslate(
-      longText,
-      "en",
-      "zh",
-      session,
-      "测试4 - "
-    );
+    const result4 = await safeTranslate(longText, "en", "zh", "测试4 - ");
     if (!result4.error) {
       passedTests++;
       console.log("✅ 测试4通过\n");
@@ -148,7 +133,6 @@ async function runAllTests() {
         testCase.text,
         testCase.from,
         testCase.to,
-        session,
         `${testCase.name} - `
       );
 

@@ -17,7 +17,7 @@ async function runAllTests() {
     let result1;
     try {
       const text = "Hello, world!";
-      const targetLang = "zh";
+      const targetLang = "ZH-HANS";
       const testName = "测试1 - 英译中";
       console.log(
         `🔄 ${testName}正在翻译: "${text.slice(0, 50)}${
@@ -64,7 +64,7 @@ async function runAllTests() {
     let result2;
     try {
       const text = "Bonjour le monde!";
-      const targetLang = "en";
+      const targetLang = "EN";
       const testName = "测试2 - 法译英";
       console.log(
         `🔄 ${testName}正在翻译: "${text.slice(0, 50)}${
@@ -110,7 +110,7 @@ async function runAllTests() {
     let result3;
     try {
       const text = "你好世界！欢迎使用DeepL翻译。";
-      const targetLang = "en";
+      const targetLang = "EN";
       const testName = "测试3 - 中译英";
       console.log(
         `🔄 ${testName}正在翻译: "${text.slice(0, 50)}${
@@ -147,6 +147,47 @@ async function runAllTests() {
       console.log("❌ 测试3失败\n");
     }
 
+    // 测试3.1: 相同目标语言，验证页面复用
+    console.log("=".repeat(50));
+    console.log("📋 测试3.1: 相同目标语言 (中 -> 英，复用页面)");
+    console.log("=".repeat(50));
+    totalTests++;
+
+    let result3_1;
+    try {
+      const text = "这是第二个翻译请求，应该会更快。";
+      const targetLang = "EN";
+      const testName = "测试3.1 - 中译英 (复用)";
+      console.log(
+        `🔄 ${testName}正在翻译: "${text.slice(0, 50)}${
+          text.length > 50 ? "..." : ""
+        }"`
+      );
+      const result = await translate(text, targetLang);
+      console.log(`✅ 翻译成功: "${result.data}"`);
+      console.log(
+        `🔍 检测语言: ${result.source_lang} -> ${result.target_lang}\n`
+      );
+      result3_1 = result;
+    } catch (error) {
+      const testName = "测试3.1 - 中译英 (复用)";
+      console.error(`❌ ${testName}翻译失败: ${error.message}\n`);
+
+      if (error.message.includes("Too Many Requests")) {
+        console.log("💡 建议:");
+        console.log("1. 等待10-15分钟后再试");
+        console.log("2. 减少请求频率");
+      }
+      result3_1 = { error: error.message };
+    }
+
+    if (!result3_1.error) {
+      passedTests++;
+      console.log("✅ 测试3.1通过\n");
+    } else {
+      console.log("❌ 测试3.1失败\n");
+    }
+
     // 测试4: 长文本翻译
     console.log("=".repeat(50));
     console.log("📋 测试4: 长文本翻译 (英 -> 中)");
@@ -157,7 +198,7 @@ async function runAllTests() {
     try {
       const longText =
         "The quick brown fox jumps over the lazy dog. This is a test of a longer sentence to see how the translation API handles multiple sentences and punctuation. Artificial intelligence is transforming the way we communicate across languages.";
-      const targetLang = "zh";
+      const targetLang = "ZH-HANS";
       const testName = "测试4 - 长文本";
       console.log(
         `🔄 ${testName}正在翻译: "${longText.slice(0, 50)}${

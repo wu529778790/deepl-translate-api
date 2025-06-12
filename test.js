@@ -181,40 +181,12 @@ async function runAllTests() {
   }
 }
 
-// 简单快速测试函数
-async function quickTest() {
-  console.log("⚡ 快速测试模式\n");
-
-  const session = await getSession();
-  console.log("会话ID:", session ? "✅" : "❌");
-
-  const result = await safeTranslate(
-    "Hello",
-    "en",
-    "zh",
-    session,
-    "快速测试 - "
-  );
-
-  if (!result.error) {
-    console.log("🎉 快速测试通过！API可用！");
-  } else {
-    console.log("❌ 快速测试失败，建议稍后重试");
-  }
-}
-
 // 运行测试
 async function main() {
-  const args = process.argv.slice(2);
-
-  if (args.includes("--quick") || args.includes("-q")) {
-    await quickTest();
-  } else {
-    await runAllTests();
-  }
+  await runAllTests();
 }
 
 // 运行测试
 main();
 
-export { runAllTests, quickTest, safeTranslate };
+export { runAllTests, safeTranslate };

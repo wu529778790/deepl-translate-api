@@ -1,9 +1,5 @@
 import { translate, getSession } from "./lib/main.js";
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 /**
  * 安全翻译函数 - 带错误处理
  */
@@ -56,7 +52,6 @@ async function runAllTests() {
     console.log("=".repeat(50));
     totalTests++;
 
-    await sleep(2000); // 初始延时
     const result1 = await safeTranslate(
       "Hello, world!",
       "en",
@@ -70,8 +65,6 @@ async function runAllTests() {
     } else {
       console.log("❌ 测试1失败\n");
     }
-
-    await sleep(6000); // 测试间隔
 
     // 测试2: 自动检测语言
     console.log("=".repeat(50));
@@ -93,8 +86,6 @@ async function runAllTests() {
       console.log("❌ 测试2失败\n");
     }
 
-    await sleep(6000);
-
     // 测试3: 中文翻译英文
     console.log("=".repeat(50));
     console.log("📋 测试3: 中文翻译英文");
@@ -114,8 +105,6 @@ async function runAllTests() {
     } else {
       console.log("❌ 测试3失败\n");
     }
-
-    await sleep(8000); // 长文本前更长延时
 
     // 测试4: 长文本翻译
     console.log("=".repeat(50));
@@ -138,8 +127,6 @@ async function runAllTests() {
     } else {
       console.log("❌ 测试4失败\n");
     }
-
-    await sleep(8000);
 
     // 测试5: 多语言翻译测试
     console.log("=".repeat(50));
@@ -171,11 +158,6 @@ async function runAllTests() {
       } else {
         console.log(`❌ ${testCase.name}失败`);
       }
-
-      // 最后一个测试不需要等待
-      if (i < testCases.length - 1) {
-        await sleep(8000);
-      }
     }
 
     // 测试总结
@@ -205,8 +187,6 @@ async function quickTest() {
 
   const session = await getSession();
   console.log("会话ID:", session ? "✅" : "❌");
-
-  await sleep(3000);
 
   const result = await safeTranslate(
     "Hello",

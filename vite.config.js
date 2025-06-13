@@ -8,10 +8,10 @@ export default defineConfig({
       fileName: "deepl-translate-api",
     },
     rollupOptions: {
-      external: ["axios"],
+      external: ["playwright"],
       output: {
         globals: {
-          axios: "axios",
+          playwright: "playwright",
         },
       },
     },

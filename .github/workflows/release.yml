@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "package.json"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: "contains(github.event.head_commit.message, 'chore: release') || contains(github.event.head_commit.message, 'chore(release)')"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Get package version
+        id: package_version
+        run: |
+          echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          if git rev-parse "v${{ steps.package_version.outputs.version }}" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Release
+        if: steps.check_tag.outputs.exists == 'false'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.package_version.outputs.version }}
+          release_name: Release v${{ steps.package_version.outputs.version }}
+          body: |
+            发布版本 v${{ steps.package_version.outputs.version }}
+
+            ## 更新内容
+            请查看提交历史了解详细更新内容。
+          draft: false
+          prerelease: false

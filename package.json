@@ -34,7 +34,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/wu529778790/deepl-translate-api"
   },
   "peerDependencies": {
     "playwright": "^1.48.0"

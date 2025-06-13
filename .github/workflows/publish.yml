@@ -1,17 +1,20 @@
-name: Publish to NPM
+name: Auto Test, Version & Publish
 
 on:
-  release:
-    types: [published]
+  push:
+    branches: [main, master]
   workflow_dispatch:
 
 jobs:
-  publish:
+  auto-publish:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -52,7 +55,66 @@ jobs:
       - name: Run tests
         run: pnpm test
 
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Check if version should be updated
+        id: should_update
+        run: |
+          # 检查最后一次提交是否是版本更新提交
+          LAST_COMMIT_MSG=$(git log -1 --pretty=%B)
+          if [[ "$LAST_COMMIT_MSG" == *"v1."* && "$LAST_COMMIT_MSG" == *"[skip ci]"* ]]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "Last commit was version update, skipping..."
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "Proceeding with version update..."
+          fi
+
+      - name: Update version
+        if: steps.should_update.outputs.skip == 'false'
+        run: |
+          # 获取当前版本
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "Current version: $CURRENT_VERSION"
+
+          # 更新版本
+          npm version patch -m "v%s [skip ci]"
+
+          # 获取新版本
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "New version: $NEW_VERSION"
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
+      - name: Push version update
+        if: steps.should_update.outputs.skip == 'false'
+        run: |
+          git push origin HEAD:${{ github.ref_name }}
+          git push origin --tags
+
       - name: Publish to NPM
+        if: steps.should_update.outputs.skip == 'false'
         run: pnpm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        if: steps.should_update.outputs.skip == 'false'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ env.NEW_VERSION }}
+          release_name: Release v${{ env.NEW_VERSION }}
+          body: |
+            🚀 自动发布版本 v${{ env.NEW_VERSION }}
+
+            ## 更新内容
+            - 自动版本更新和发布
+            - 通过所有测试
+
+            查看详细更改请参考提交历史。
+          draft: false
+          prerelease: false

@@ -73,16 +73,22 @@ jobs:
             echo "Proceeding with version update..."
           fi
 
-      - name: Update version
+            - name: Update version
         if: steps.should_update.outputs.skip == 'false'
         run: |
           # 获取当前版本
           CURRENT_VERSION=$(node -p "require('./package.json').version")
           echo "Current version: $CURRENT_VERSION"
-
+          
+          # 提交构建生成的文件（如果有的话）
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update build files"
+          fi
+          
           # 更新版本
           npm version patch -m "v%s [skip ci]"
-
+          
           # 获取新版本
           NEW_VERSION=$(node -p "require('./package.json').version")
           echo "New version: $NEW_VERSION"

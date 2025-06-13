@@ -17,7 +17,7 @@ async function runAllTests() {
     let result1;
     try {
       const text = "Hello, world!";
-      const targetLang = "ZH-HANS";
+      const targetLang = "zh-hans";
       const testName = "测试1 - 英译中";
       console.log(
         `🔄 ${testName}正在翻译: "${text.slice(0, 50)}${
@@ -64,7 +64,7 @@ async function runAllTests() {
     let result2;
     try {
       const text = "Bonjour le monde!";
-      const targetLang = "EN";
+      const targetLang = "en";
       const testName = "测试2 - 法译英";
       console.log(
         `🔄 ${testName}正在翻译: "${text.slice(0, 50)}${
@@ -110,7 +110,7 @@ async function runAllTests() {
     let result3;
     try {
       const text = "你好世界！欢迎使用DeepL翻译。";
-      const targetLang = "EN";
+      const targetLang = "en";
       const testName = "测试3 - 中译英";
       console.log(
         `🔄 ${testName}正在翻译: "${text.slice(0, 50)}${
@@ -156,7 +156,7 @@ async function runAllTests() {
     let result3_1;
     try {
       const text = "这是第二个翻译请求，应该会更快。";
-      const targetLang = "EN";
+      const targetLang = "en";
       const testName = "测试3.1 - 中译英 (复用)";
       console.log(
         `🔄 ${testName}正在翻译: "${text.slice(0, 50)}${
@@ -198,7 +198,7 @@ async function runAllTests() {
     try {
       const longText =
         "The quick brown fox jumps over the lazy dog. This is a test of a longer sentence to see how the translation API handles multiple sentences and punctuation. Artificial intelligence is transforming the way we communicate across languages.";
-      const targetLang = "ZH-HANS";
+      const targetLang = "zh-hans";
       const testName = "测试4 - 长文本";
       console.log(
         `🔄 ${testName}正在翻译: "${longText.slice(0, 50)}${

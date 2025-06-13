@@ -7,7 +7,9 @@
   "files": [
     "dist",
     "lib",
-    "index.d.ts"
+    "index.d.ts",
+    "README.md",
+    "LICENSE"
   ],
   "main": "./dist/deepl-translate-api.umd.cjs",
   "module": "./dist/deepl-translate-api.js",

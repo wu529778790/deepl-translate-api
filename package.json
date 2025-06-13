@@ -1,7 +1,7 @@
 {
   "name": "deepl-translate-api",
   "private": false,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "免费的DeepL翻译API，支持自动语言检测和多种语言互译",
   "type": "module",
   "files": [

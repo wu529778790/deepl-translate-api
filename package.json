@@ -1,7 +1,7 @@
 {
   "name": "deepl-translate-api",
   "private": false,
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "免费的DeepL翻译API，支持自动语言检测和多种语言互译",
   "type": "module",
   "files": [
@@ -11,13 +11,13 @@
     "README.md",
     "LICENSE"
   ],
-  "main": "./dist/deepl-translate-api.umd.cjs",
+  "main": "./dist/deepl-translate-api.cjs",
   "module": "./dist/deepl-translate-api.js",
   "types": "./index.d.ts",
   "exports": {
     "types": "./index.d.ts",
     "import": "./dist/deepl-translate-api.js",
-    "require": "./dist/deepl-translate-api.umd.cjs"
+    "require": "./dist/deepl-translate-api.cjs"
   },
   "scripts": {
     "dev": "node test.js",
@@ -32,16 +32,22 @@
     "free",
     "multilingual"
   ],
-  "author": "",
+  "author": "wu529778790",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/wu529778790/deepl-translate-api"
   },
   "peerDependencies": {
-    "playwright": "^1.48.0"
+    "playwright": ">=1.38.0"
+  },
+  "peerDependenciesMeta": {
+    "playwright": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "vite": "^6.1.1"
-  }
+  },
+  "sideEffects": false
 }

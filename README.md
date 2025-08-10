@@ -2,7 +2,7 @@
 
 免费的 DeepL 网页版翻译 API（非官方）。使用 Playwright 启动本地浏览器，自动打开 DeepL 网页完成翻译。
 
-适用于 Node.js 环境，支持自动检测源语言，仅需指定目标语言。目标语言代码完全遵循 DeepL 官方（不做映射）。
+适用于 Node.js 环境，支持自动检测源语言，仅需指定目标语言。目标语言代码完全遵循 DeepL 官方.
 
 ## 安装
 
@@ -27,16 +27,21 @@ console.log(res.data); // 你好，世界
 
 ## API
 
-- translate(text, targetLang?) -> Promise<TranslateResult>
-  - text: string，最大 5000 字符
-  - targetLang: DeepL 官方目标语言代码（默认 "ZH-HANS"）
-  - 返回: { code, id, method, data, source_lang, target_lang }
+| 方法 | 签名 | 返回 | 说明 |
+|---|---|---|---|
+| translate | `translate(text, targetLang?)` | `Promise<TranslateResult>` | 执行一次翻译，自动检测源语言，仅需指定目标语言 |
+| cleanup | `cleanup()` | `Promise<void>` | 关闭并释放浏览器实例与页面资源 |
+| findChromePath | `findChromePath()` | `string | null` | 查找系统已安装的 Chrome/Chromium 路径 |
+| askUserToDownloadChrome | `askUserToDownloadChrome()` | `Promise<boolean>` | 交互式询问是否自动安装 Playwright 的 Chromium |
+| launchWithPlaywrightChromium | `launchWithPlaywrightChromium()` | `Promise<{ browser, page }>` | 使用 Playwright 内置 Chromium 启动并返回浏览器与页面 |
+| getSupportedLanguages | `getSupportedLanguages()` | `string[]` | 返回 DeepL 官方目标语言代码（大写）列表 |
 
-- cleanup() -> Promise<void>
-- findChromePath() -> string | null
-- askUserToDownloadChrome() -> Promise<boolean>
-- launchWithPlaywrightChromium() -> Promise<{ browser, page }>
-- getSupportedLanguages() -> string[]
+translate 参数：
+
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+|---|---|---|---|---|
+| text | `string` | 是 | - | 需要翻译的文本，最大 5000 字符 |
+| targetLang | `string` | 否 | `"ZH-HANS"` | DeepL 官方目标语言代码，如 `EN-US`、`EN-GB`、`ZH-HANS`、`ZH-HANT` |
 
 ## 支持的语言
 
